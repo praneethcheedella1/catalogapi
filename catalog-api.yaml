@@ -1,0 +1,372 @@
+swagger: '2.0'
+info:
+  description: Lorem ipsum
+  version: 1.0.0
+  title: Producer Catalog API
+  termsOfService: 'http://swagger.io/terms/'
+  contact:
+    email: daniel.dixon@terazo.com
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0.html'
+host: loremipsum.com
+basePath: /v1
+tags:
+  - name: healthcheck
+    description: Healthcheck for API
+  - name: catalogued-apis
+    description: List of APIs available on the one platform and associated information
+    externalDocs:
+      description: Find out more
+      url: 'http://swagger.io'
+schemes:
+  - https
+  - http
+paths:
+  /apis/healthcheck:
+    get:
+      tags:
+        - healthcheck
+      summary: Producer Catalog Healthcheck
+      description: >-
+        Performs a healthcheck on the Producer Catalog API microservice. It
+        returns either a GenericError response or, ideally, it will return a
+        HealthCheckResponse object that provides more info about the service
+        (such as name, version, uptime, status).
+      operationId: getCatalogAPIHealthcheck
+      produces:
+        - application/json
+      parameters: []
+      responses:
+        '200':
+          description: Returns the Healthcheck status
+          schema:
+            type: object
+            properties: {}
+        default:
+          description: General Error payload
+          schema:
+            $ref: '#/definitions/GeneralError'
+      security: []
+  /apis:
+    post:
+      tags:
+        - catalogued-apis
+      summary: Add a new API to the catalogue
+      description: ''
+      operationId: addAPI
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: Project object needed to be added
+          required: true
+          schema:
+            $ref: '#/definitions/Request.APICreate'
+      responses:
+        '201':
+          description: API Created
+          schema:
+            type: object
+            properties:
+              apiId:
+                type: string
+        '405':
+          description: Invalid input
+      security:
+        - OAuth: []
+    get:
+      tags:
+        - catalogued-apis
+      summary: Returns all publicly accessible APIs as well as those the requesting user has private access to
+      operationId: getAllAPIs
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - name: page
+          in: query
+          required: false
+          type: string
+        - name: pageSize
+          in: query
+          required: false
+          type: string
+        - name: id
+          in: query
+          required: false
+          type: string
+        - name: apiName
+          in: query
+          required: false
+          type: string
+        - name: environment
+          in: query
+          required: false
+          type: string
+        - name: kongWhiteListGroup
+          in: query
+          required: false
+          type: string
+        - name: description
+          in: query
+          required: false
+          type: string
+        - name: requiresApproval
+          in: query
+          required: false
+          type: boolean
+        - name: catalogAPI
+          in: query
+          required: false
+          type: boolean
+        - name: featuredAPI
+          in: query
+          required: false
+          type: boolean
+        - name: informationURL
+          in: query
+          required: false
+          type: string
+        - name: authType
+          in: query
+          required: false
+          type: string
+        - name: deprecated
+          in: query
+          required: false
+          type: boolean
+        - name: versionMajor
+          in: query
+          required: false
+          type: integer
+        - name: versionMinor
+          in: query
+          required: false
+          type: integer
+        - name: versionRevision
+          in: query
+          required: false
+          type: integer
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Response.API'
+        '400':
+          description: Invalid status value
+      security:
+        - OAuth: []
+  '/apis/{apiId}':
+    get:
+      tags:
+        - catalogued-apis
+      summary: Get an API's information by ID
+      operationId: getAPIById
+      parameters:
+        - name: apiId
+          in: path
+          required: true
+          type: string
+          description: The id of a specific API in the catalog
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            $ref: '#/definitions/Response.API'
+      security:
+        - OAuth: []
+    put:
+      tags:
+        - catalogued-apis
+      summary: Update an entire API's information
+      operationId: putAPIById
+      parameters:
+        - name: apiId
+          in: path
+          required: true
+          type: string
+          description: The id of a specific API in the catalog
+        - name: JsonPut
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/Request.APICreate'
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            $ref: '#/definitions/Response.API'
+      security:
+        - OAuth: []
+    patch:
+      tags:
+        - catalogued-apis
+      summary: Partially update an API's information
+      operationId: patchAPIById
+      parameters:
+        - name: apiId
+          in: path
+          required: true
+          type: string
+          description: The id of a specific API in the catalog
+        - name: body
+          in: body
+          required: false
+          schema: 
+            type: object
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            $ref: '#/definitions/Response.API'
+      security:
+        - OAuth: []
+    delete:
+      tags:
+        - catalogued-apis
+      summary: Remove an api
+      description: lorem ipsum
+      operationId: deleteAPIById
+      produces:
+        - application/json
+      parameters:
+        - name: apiId
+          in: path
+          description: apiId
+          required: true
+          type: string
+      responses:
+        '201':
+          description: API Deleted
+          schema:
+            type: object
+            properties:
+              projectId:
+                type: string
+        '400':
+          description: Invalid tag value
+      security:
+        - OAuth: []
+securityDefinitions:
+  OAuth:
+    type: oauth2
+    authorizationUrl: kong/token
+    flow: implicit
+definitions:
+  GeneralError:
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      message:
+        type: string
+  Request.APICreate:
+    type: object
+    required:
+      - apiId
+      - apiName
+      - environment
+      - kongWhiteListGroup
+      - description
+      - requiresApproval
+      - featuredAPI
+      - informationURL
+      - authType
+    properties:
+      apiId:
+        type: string
+      apiName:
+        type: string
+      environment:
+        type: string
+        enum:
+          - DEV
+          - SANDBOX
+          - PROD
+      kongWhiteListGroup:
+        type: string
+      description:
+        type: string
+      contactEmailList:
+        type: array
+        items:
+          type: string
+      requiresApproval:
+        type: boolean
+      catalogAPI:
+        description: If this should be displayed on the portal
+        type: boolean
+      featuredAPI:
+        type: boolean
+      informationURL:
+        type: string
+      authType:
+        type: string
+        enum:
+          - KEY
+          - OAUTH
+  Response.API:
+    type: object
+    required:
+      - apiId
+      - apiName
+      - environment
+      - kongWhiteListGroup
+      - description
+      - requiresApproval
+      - featuredAPI
+      - informationURL
+      - authType
+    properties:
+      apiId:
+        type: string
+      apiName:
+        type: string
+      environment:
+        type: string
+        enum:
+          - DEV
+          - SANDBOX
+          - PROD
+      kongWhiteListGroup:
+        type: string
+      description:
+        type: string
+      contactEmailList:
+        type: array
+        items:
+          type: string
+      requiresApproval:
+        type: boolean
+      catalogAPI:
+        description: If this should be displayed on the portal
+        type: boolean
+      featuredAPI:
+        type: boolean
+      informationURL:
+        type: string
+      authType:
+        description: Consumer authorization mechanism supported for this API
+        type: string
+        enum:
+          - KEY
+          - OAUTH
+      created:
+        type: string
+        format: date-time
+      lastUpdated:
+        type: string
+        format: date-time
+      lastUpdatedByMUDId:
+        type: string
+externalDocs:
+  description: Find out more about Swagger
+  url: 'http://swagger.io'

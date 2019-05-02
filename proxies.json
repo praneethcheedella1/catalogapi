@@ -1,0 +1,54 @@
+{
+    "$schema": "http://json.schemastore.org/proxies",
+    "proxies": {
+        "proxy1": {
+            "matchCondition": {
+                "methods": [ "POST" ],
+                "route": "platforms/core/v1/apis"
+            },
+            "backendUri": "https://gsk-us2-corp-platforms-api-inventory-dev.azurewebsites.net/api/createapi"
+        },
+        "proxy2": {
+            "matchCondition": {
+                "methods": [ "DELETE" ],
+                "route": "platforms/core/v1/apis/{id}"
+            },
+            "backendUri": "https://gsk-us2-corp-platforms-api-inventory-dev.azurewebsites.net/api/deleteapi/{id}"
+        },
+        "proxy3": {
+            "matchCondition": {
+                "methods": [ "GET" ],
+                "route": "platforms/core/v1/apis"
+            },
+            "backendUri": "https://gsk-us2-corp-platforms-api-inventory-dev.azurewebsites.net/api/getapi"
+        },
+        "proxy4": {
+            "matchCondition": {
+                "methods": [ "GET" ],
+                "route": "platforms/core/v1/apis/{id}"
+            },
+            "backendUri": "https://gsk-us2-corp-platforms-api-inventory-dev.azurewebsites.net/api/getapibyid/{id}"
+        },
+        "proxy5": {
+            "matchCondition": {
+                "methods": [ "PUT" ],
+                "route": "platforms/core/v1/apis/{id}"
+            },
+            "backendUri": "https://gsk-us2-corp-platforms-api-inventory-dev.azurewebsites.net/api/updateapi/{id}"
+        },
+        "proxy6": {
+            "matchCondition": {
+                "methods": [ "PATCH" ],
+                "route": "platforms/core/v1/apis/{id}"
+            },
+            "backendUri": "https://gsk-us2-corp-platforms-api-inventory-dev.azurewebsites.net/api/updatepartialapi/{id}"
+        },
+        "proxy7": {
+            "matchCondition": {
+                "methods": ["GET"],
+                "route": "platforms/core/v1/apis/healthcheck"
+            },
+            "backendUri": "https://gsk-us2-corp-platforms-api-inventory-dev.azurewebsites.net/api/healthcheck"
+        }
+    }
+}

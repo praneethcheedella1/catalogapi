@@ -1,0 +1,10 @@
+{
+  "azureFunctions.projectRuntime": "~2",
+  "azureFunctions.projectLanguage": "C#",
+  "azureFunctions.templateFilter": "Verified",
+  "azureFunctions.deploySubpath": "bin/Release/netcoreapp2.1/publish",
+  "azureFunctions.preDeployTask": "publish",
+  "debug.internalConsoleOptions": "neverOpen",
+  "appService.defaultWebAppToDeploy": "/subscriptions/b65b2824-027d-4e5c-b154-403d9c8eba19/resourceGroups/appsvc_rg_windows_centralus/providers/Microsoft.Web/sites/integrationtest1",
+  "appService.deploySubpath": ""
+}
